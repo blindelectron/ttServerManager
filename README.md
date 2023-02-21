@@ -1,8 +1,8 @@
 # ttServerManager
 A server management bot fore TeamTalk5
 see the example configuration file for the documentation on how to configure it.
-#features
-#commands
+# features
+# commands
 ban and unban, ban a user by nickname.
 it bans the users ipAddress.
 bans, lists all band users on the server and there atributes.
@@ -27,10 +27,10 @@ Note that this command wil list passwords, so don't use it in a channel where ot
 move, moves the specified user to the specified channel.
 It does not matter if you prepend and append the channel path with slashes, this is handled automatically.
 motd, sends back the server message of the day.
-#notes on commands.
+# notes on commands.
 if sending in a channel message, you must prepend the command with a slash(/)
 Most commands are baced on user nickname, unless otherwise specified.
-#other functions.
+# other functions.
 If the user is an admin and the feature  is enabled, the bot will intercept there channel messages so that it won't matter what channel they are in.
-#important notes.
+# important notes.
 The bot must be logged in as an admin for it to work properly.
