@@ -1,7 +1,7 @@
 AS=as
 CC="C:\Users\Ethan Jones\AppData\Local\Nuitka\Nuitka\Cache\downloads\ccache\v4.6\ccache.exe" "C:\Users\Ethan Jones\scoop\apps\mingw\current\bin\gcc.exe"
 CCACHE_DIR=C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache
-CCACHE_LOGFILE=C:\Users\ETHANJ~1\coding\TTSERV~1\serverManager.onefile-build\ccache-8080.txt
+CCACHE_LOGFILE=C:\Users\ETHANJ~1\coding\TTSERV~1\serverManager.onefile-build\ccache-5376.txt
 CCCOM=$CC -o $TARGET -c $CFLAGS $CCFLAGS $_CCCOMCOM $SOURCES
 CFILESUFFIX=.c
 CPPDEFINES=['_WIN32_WINNT=0x0501', '__NUITKA_NO_ASSERT__', '_NUITKA_ONEFILE_MODE']

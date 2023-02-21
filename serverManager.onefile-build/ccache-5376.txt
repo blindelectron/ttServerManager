@@ -1,0 +1,61 @@
+[2023-02-21T14:34:35.810674 10388] === CCACHE 4.6 STARTED =========================================
+[2023-02-21T14:34:35.810674 10388] Config: (default) absolute_paths_in_stderr = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) base_dir = 
+[2023-02-21T14:34:35.810674 10388] Config: (environment) cache_dir = C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache
+[2023-02-21T14:34:35.810674 10388] Config: (default) compiler = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) compiler_check = mtime
+[2023-02-21T14:34:35.810674 10388] Config: (default) compiler_type = auto
+[2023-02-21T14:34:35.810674 10388] Config: (default) compression = true
+[2023-02-21T14:34:35.810674 10388] Config: (default) compression_level = 0
+[2023-02-21T14:34:35.810674 10388] Config: (default) cpp_extension = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) debug = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) debug_dir = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) depend_mode = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) direct_mode = true
+[2023-02-21T14:34:35.810674 10388] Config: (default) disable = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) extra_files_to_hash = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) file_clone = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) hard_link = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) hash_dir = true
+[2023-02-21T14:34:35.810674 10388] Config: (default) ignore_headers_in_manifest = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) ignore_options = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) inode_cache = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) keep_comments_cpp = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) limit_multiple = 0.8
+[2023-02-21T14:34:35.810674 10388] Config: (environment) log_file = C:\Users\ETHANJ~1\coding\TTSERV~1\serverManager.onefile-build\ccache-5376.txt
+[2023-02-21T14:34:35.810674 10388] Config: (default) max_files = 0
+[2023-02-21T14:34:35.810674 10388] Config: (default) max_size = 5.0G
+[2023-02-21T14:34:35.810674 10388] Config: (default) namespace = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) path = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) pch_external_checksum = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) prefix_command = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) prefix_command_cpp = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) read_only = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) read_only_direct = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) recache = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) reshare = false
+[2023-02-21T14:34:35.810674 10388] Config: (default) run_second_cpp = true
+[2023-02-21T14:34:35.810674 10388] Config: (default) secondary_storage = 
+[2023-02-21T14:34:35.810674 10388] Config: (environment) sloppiness = include_file_mtime, include_file_ctime
+[2023-02-21T14:34:35.810674 10388] Config: (default) stats = true
+[2023-02-21T14:34:35.810674 10388] Config: (default) stats_log = 
+[2023-02-21T14:34:35.810674 10388] Config: (default) temporary_dir = C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache/tmp
+[2023-02-21T14:34:35.810674 10388] Config: (default) umask = 
+[2023-02-21T14:34:35.810674 10388] Command line: C:\Users\Ethan Jones\AppData\Local\Nuitka\Nuitka\Cache\downloads\ccache\v4.6\ccache.exe C:\Users\Ethan Jones\scoop\apps\mingw\current\bin\gcc.exe -o static_src\OnefileBootstrap.o -c -flto -fuse-linker-plugin -fno-fat-lto-objects -std=c11 -fvisibility=hidden -fwrapv -pipe -fpartial-inlining -ftrack-macro-expansion=0 -Wno-deprecated-declarations -fno-var-tracking -Wno-misleading-indentation -fcompare-debug-second -O3 -D_WIN32_WINNT=0x0501 -D__NUITKA_NO_ASSERT__ -D_NUITKA_ONEFILE_MODE -I. -IC:\Users\ETHANJ~1\AppData\Roaming\Python\Python39\SITE-P~1\nuitka\build\include -IC:\Users\ETHANJ~1\AppData\Roaming\Python\Python39\SITE-P~1\nuitka\build\static_src -IC:\Users\ETHANJ~1\AppData\Roaming\Python\Python39\SITE-P~1\nuitka\build\inline_copy\zstd static_src\OnefileBootstrap.c
+[2023-02-21T14:34:35.816017 10388] Hostname: dingdell
+[2023-02-21T14:34:35.816017 10388] Working directory: C:/Users/ETHANJ~1/coding/TTSERV~1/serverManager.onefile-build
+[2023-02-21T14:34:35.816017 10388] Compiler type: gcc
+[2023-02-21T14:34:35.817019 10388] Source file: static_src\OnefileBootstrap.c
+[2023-02-21T14:34:35.817019 10388] Object file: static_src\OnefileBootstrap.o
+[2023-02-21T14:34:35.817019 10388] Trying direct lookup
+[2023-02-21T14:34:35.817019 10388] Retrieved f2f1p5tn1hhm32p0bkcss6mji8h05ga7m from primary storage (C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache/f/2/f1p5tn1hhm32p0bkcss6mji8h05ga7mM)
+[2023-02-21T14:34:35.823107 10388] Looking for result key in C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache/f/2/f1p5tn1hhm32p0bkcss6mji8h05ga7mM
+[2023-02-21T14:34:35.874149 10388] Got result key from manifest
+[2023-02-21T14:34:35.874149 10388] Retrieved 592airvgd7u4abc2duok829ngr1fetomc from primary storage (C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache/5/9/2airvgd7u4abc2duok829ngr1fetomcR)
+[2023-02-21T14:34:35.887030 10388] Reading embedded entry #0 .o (525457 bytes)
+[2023-02-21T14:34:35.887030 10388] Writing to static_src\OnefileBootstrap.o
+[2023-02-21T14:34:35.888032 10388] Succeeded getting cached result
+[2023-02-21T14:34:35.889034 10388] Result: direct_cache_hit
+[2023-02-21T14:34:35.889034 10388] Result: primary_storage_hit
+[2023-02-21T14:34:35.889034 10388] Acquired lock C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache/9/4/stats.lock
+[2023-02-21T14:34:35.892757 10388] Releasing lock C:\Users\ETHANJ~1\AppData\Local\Nuitka\Nuitka\Cache\ccache/9/4/stats.lock
