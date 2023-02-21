@@ -1,2 +1,3 @@
 echo "compiling with nueitka "
-python -m nuitka --standalone --onefile serverManager.py
+python -m nuitka --mingw --standalone --onefile serverManager.py
+pause
