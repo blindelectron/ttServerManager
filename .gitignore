@@ -128,7 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 ##nueitka:
-*.onefilebuild/
+*.onefile-build/
 *.dist/
 *.build/
 serverManager.exe
