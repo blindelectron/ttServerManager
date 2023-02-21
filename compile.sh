@@ -1,3 +1,3 @@
 #!/bin/bash
 echo "compiling with newitka ""
-python -m nueitka --standalone --onefile serverManager.py
+python -m nuitka --standalone --onefile serverManager.py
