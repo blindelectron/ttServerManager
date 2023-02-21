@@ -5,7 +5,7 @@ import os
 from core import server,config
 import json
 
-version="alfa 2.0"
+version="1.0"
 
 def main():
 	servers={}
