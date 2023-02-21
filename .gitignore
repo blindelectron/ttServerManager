@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+##nueitka:
+*.onefilebuild/
+*.dist/
+*.build/
+##ignore some local files:
+config.ini
+teamtalk - audio atmpt/
