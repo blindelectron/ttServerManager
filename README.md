@@ -24,7 +24,7 @@ newaccount username=<accountUserName> password=<accountPassword type=<accountTyp
 ```
 Replace accountUsername with the username you want to use for the account, and accountPassword with the password you want for the account. Types are 1: default user, 2: administrator, 0: disabled
 * delaccount, deletes the account with the specified username.
-accounts, lists all accounts on the server and there attributes.
+* accounts, lists all accounts on the server and there attributes.
 Note that this command will list passwords, so don't use it in a channel where others are, in fact I would recommend just private messaging the bot if your touching the account commands.
 * move, moves the specified user to the specified channel.
 It does not matter if you propend and append the channel path with slashes, this is handled automatically.
