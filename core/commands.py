@@ -147,7 +147,7 @@ class commandHandeler:
 		data=dict(matches)
 		for u in self.server.tcls.getAccounts():
 			if u["username"]==data["username"]: return f'the account {u["username"]} already exists, try a different name'
-		self.server.tcls.newAccount(data["username"],data["password"],data["type"])
+		self.server.tcls.newAccount(data["username"],data["password"],int(data["type"]))
 
 	def delaccount(self,msg):
 		u=None

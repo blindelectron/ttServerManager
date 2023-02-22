@@ -25,9 +25,9 @@ BROADCAST_MSG = 3
 CUSTOM_MSG = 4
 
 ## User Types (from library/teamtalk_lib/teamtalk/common.h)
-USERTYPE_NONE	 = 0x00
+USERTYPE_NONE = 0x00
 USERTYPE_DEFAULT      = 0x01
-USERTYPE_ADMIN	= 0x02
+USERTYPE_ADMIN= 0x02
 
 ## Command Errors
 
@@ -639,8 +639,11 @@ class TeamTalkServer:
 		while self.getingAccounts: self._sleep(0.05)
 		return self.accounts
 
-	def newAccount(self,username: str,password: str,type: int):
-		msg=build_tt_message("newaccount",{"username":username,"password":password,"usertype":type})
+	def newAccount(self,username: str,password: str,usertype: int,userRights=[]):
+		params={"username":username,"password":password,"usertype":usertype}
+		if usertype<2: 
+			params.update({"userrights":USERRIGHT_DEFAULT})
+		msg=build_tt_message("newaccount",params)
 		self.send(msg)
 
 	def deleteAccount(self,username: str):
