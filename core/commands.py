@@ -6,6 +6,16 @@ from teamtalk import teamtalk
 import shlex
 import re
 
+def getDictFromMessage(msg):
+	pattern = r'\b(\w+)=(\w+)\b'
+	matches = re.findall(pattern, msg)
+	data=dict(matches)
+	return data
+
+def getListFromMessage(msg):
+	data=msg.split("::")
+	return data
+
 class commandHandeler:
 	def __init__(self,server):
 		self.commands = [i for i in dir(self) if not i.startswith("_") if callable(getattr(self,i))]
@@ -41,11 +51,13 @@ class commandHandeler:
 			self.server.tcls.kick(u)
 
 	def kick(self,msg):
-		u=None
-		for us in self.server.tcls.users:
-			if us["nickname"] in msg: u=us
-		if u is None: return "User not found."
-		self.server.tcls.kick(u)
+		u=[]
+		for ul in getListFromMessage(msg):
+			for us in self.server.tcls.users:
+				if us["nickname"] in msg: u.append(us)
+		if u==[]: return "User not found."
+		for user in u:
+			self.server.tcls.kick(user)
  
 	def jail(self,msg):
 		u=""
@@ -53,7 +65,7 @@ class commandHandeler:
 			if us["nickname"]==msg: 
 				u=us
 		if u=="":
-			for us in self.server.tcls.getAccounts():
+			for us in self.server.tcls	.getAccounts():
 				if us["username"]==msg:
 					u=us
 		if u=="": return f'the user {msg}, was not found.'
@@ -80,17 +92,20 @@ class commandHandeler:
 		if u is None: return f'the user {msg}, was not found.'
 
 	def move(self,msg):
-		u=None
-		for us in self.server.tcls.users:
-			if us["nickname"] in msg: u=us
-		if u is None: return "user not found."
+		u=[]
+		nu=[]
+		for ul in getListFromMessage(msg):
+			for us in self.server.tcls.users:
+				if us["nickname"] in ul: u.append(us)
+		if u==[]: return "user not found."
 		c=None
 		for ch in self.server.tcls.channels:
-			if ch["channel"].lstrip("/").rstrip("/")==msg.lstrip(u["nickname"]+" "): c=ch
-			elif ch["channel"]==msg.lstrip(u["nickname"]+" "): c=ch
+			if ch["channel"].lstrip("/").rstrip("/") in msg and ch["channel"].lstrip("/").rstrip("/")!="": c=ch;print("found channel "+ch["channel"].lstrip("/").rstrip("/"))
+			elif ch["channel"] in msg: c=ch
 		if c is None: return "channel not found."
-		self.server.tcls.move(u,c)
-
+		for user in u:
+			if user["chanid"] is not None and user["chanid"]==ch["chanid"]: continue
+			self.server.tcls.move(user,c)
 
 	def pm(self,msg):
 		u=""
@@ -103,12 +118,14 @@ class commandHandeler:
 		self.server.tcls.broadcast_message(msg)
 
 	def ban(self,msg):
-		u=None
-		for us in self.server.tcls.users:
-			if us["nickname"] in msg: u=us["userid"];user=us
-		if u is None: return "User not found."
-		self.server.tcls.ban(u)
-		self.server.tcls.kick(u)
+		u=[]
+		for ul in getListFromMessage(msg):
+			for us in self.server.tcls.users:
+				if us["nickname"] in ul: u.append(us["userid"])
+		if u==[]: return "User not found."
+		for user in u:
+			self.server.tcls.ban(user)
+		self.server.tcls.kick(user)
 
 	def unban(self,msg):
 		u=None
@@ -142,9 +159,7 @@ class commandHandeler:
 		return str(self.server.tcls.getAccounts())
 
 	def newaccount(self,msg):
-		pattern = r'\b(\w+)=(\w+)\b'
-		matches = re.findall(pattern, msg)
-		data=dict(matches)
+		data=getDictFromMessage(msg)
 		for u in self.server.tcls.getAccounts():
 			if u["username"]==data["username"]: return f'the account {u["username"]} already exists, try a different name'
 		self.server.tcls.newAccount(data["username"],data["password"],int(data["type"]))

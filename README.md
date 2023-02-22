@@ -1,6 +1,6 @@
 # ttServerManager
-A server management bot fore TeamTalk5
-see the example configuration file for the documentation on how to configure it.
+A server management bot fore TeamTalk5.
+See the example configuration file for the documentation on how to configure it.
 # features
 ## commands
 * ban and unban, ban a user by nickname.
@@ -32,7 +32,9 @@ It does not matter if you propend and append the channel path with slashes, this
 ### notes on commands.
 if sending in a channel message, you must propend the command with a slash(/)
 Most commands are based on user nickname, unless otherwise specified.
+The commands kick, move, and bann are able to take lists of users, separated by to colons(::).
 ## other functions.
 * If the user is an admin and the feature  is enabled, the bot will intercept there channel messages so that it won't matter what channel they are in.
 # important notes.
 The bot must be logged in as an admin for it to work properly.
+If you have a problem with the bot, please contact me directly or open an issue on Github.
