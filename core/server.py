@@ -7,6 +7,7 @@ from serverManager import version
 from . import commands
 import threading
 import secrets
+import inspect
 
 class server:
 	def __init__(self,host: str,port: int,autoSub: bool,jailChannel: str,nickname: str,username: str,password: str,jailed: dict,initialChannel: str):
@@ -67,7 +68,10 @@ class server:
 				else: continue
 		c=func
 		func=getattr(commands.commandHandeler,func)
-		func=func(self.commandHandeler,msg.lstrip(c).lstrip(" "))
+		numArgs=len(inspect.signature(func).parameters)
+		if numArgs==1: func=func(self.commandHandeler)
+		elif numArgs==2: func=func(self.commandHandeler,msg.lstrip(c).lstrip(" "))
+		elif numArgs==3: func=func(self.commandHandeler,msg.lstrip(c).lstrip(" "),user)
 		if func is not None:
 			return func
 

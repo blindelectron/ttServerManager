@@ -29,10 +29,12 @@ Note that this command will list passwords, so don't use it in a channel where o
 * move, moves the specified user to the specified channel.
 It does not matter if you propend and append the channel path with slashes, this is handled automatically.
 * motd, sends back the server message of the day.
+* talkto, allows the sender to have  a private conversation with another specified user.
+This command moves the sender and user in to anew channel with a genorated password, it is useful when an admin needs to have a private conversation with a user.
 ### notes on commands.
 if sending in a channel message, you must propend the command with a slash(/)
 Most commands are based on user nickname, unless otherwise specified.
-The commands kick, move, and bann are able to take lists of users, separated by to colons(::).
+The commands kick, move, ban, and talkto are able to take lists of users, separated by to colons(::).
 ## other functions.
 * If the user is an admin and the feature  is enabled, the bot will intercept there channel messages so that it won't matter what channel they are in.
 # important notes.

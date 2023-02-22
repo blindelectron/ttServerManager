@@ -5,6 +5,7 @@ author: blindelectron
 from teamtalk import teamtalk
 import shlex
 import re
+import secrets
 
 def getDictFromMessage(msg):
 	pattern = r'\b(\w+)=(\w+)\b'
@@ -88,7 +89,6 @@ class commandHandeler:
 						if un["username"] in us["users"] and un["lastid"] is not None: self.server.tcls.move(un,un["lastid"])
 					return f'the user {str(us["users"])}, has been removed from jail'
 				else: return f'The user {msg}, is already out of jail.'
-
 		if u is None: return f'the user {msg}, was not found.'
 
 	def move(self,msg):
@@ -170,3 +170,19 @@ class commandHandeler:
 			if us["username"]==msg: u=us
 		if u is None: return "useraccount "+msg+" not found."
 		self.server.tcls.deleteAccount(u["username"])
+
+	def talkto(self,msg,user):
+		u=[]
+		for ul in getListFromMessage(msg):
+			for us in self.server.tcls.users:
+				if us["nickname"] in msg: u.append(us)
+		if u==[]: return "user not found."
+		u.append(user)
+		un=[]
+		for ul in u:
+			if u.index(ul)>=len(u)-1: break
+			un.append(ul["nickname"])
+		self.server.tcls.send(f'makechannel parentid=1 name="{u[-1]["nickname"]} talking to {", ".join(un)}" password={secrets.token_hex(32)} audiocodec=[3,48000,2,2049,10,1,0,64000,0,0,1920,1] audiocfg=[0,0]')
+		self.server.tcls._sleep(0.2)
+		for ul in u:
+			self.server.tcls.move(ul,f'/{u[-1]["nickname"]} talking to {", ".join(un)}/')
