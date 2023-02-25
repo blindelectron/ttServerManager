@@ -175,6 +175,7 @@ class commandHandeler:
 		u=[]
 		for ul in getListFromMessage(msg):
 			for us in self.server.tcls.users:
+				if us["userid"]==user["userid"]: return "Sorry, you can not talk to yourself."
 				if us["nickname"] in msg: u.append(us)
 		if u==[]: return "user not found."
 		u.append(user)
