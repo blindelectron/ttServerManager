@@ -14,7 +14,6 @@ import threading
 import telnetlib
 import warnings
 import functools
-import asyncio
 
 # constants
 ## MSG Types

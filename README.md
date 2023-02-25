@@ -37,7 +37,7 @@ Most commands are based on user nickname, unless otherwise specified.
 The commands kick, move, ban, and talkto are able to take lists of users, separated by to colons(::).
 ## other functions.
 * If the user is an admin and the feature  is enabled, the bot will intercept there channel messages so that it won't matter what channel they are in.
-*if the feature is enabled, the bot can move a user to an idle channel when there status changes to away.
+* If the feature is enabled, the bot can move a user to an idle channel when there status changes to away.
 # important notes.
 The bot must be logged in as an admin for it to work properly.
 If you have a problem with the bot, please contact me directly or open an issue on Github.
