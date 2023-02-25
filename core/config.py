@@ -24,12 +24,18 @@ def getServerParams(serverName: str):
 	nickname="serverManager"
 	jailed={}
 	autoSub=True
+	autoAway=False
 	channel="/"
 	if config.has_option(server,"nickname"): nickname=config.get(server,"nickname")
 	if config.has_option(server,"initialchannel"): channel=config.get(server,"initialchannel")
 	if config.has_option(server,"autosubscribe"): autoSub=config.getboolean(server,"autosubscribe")
+	if config.has_option(server,"autoaway"): autoAway=config.getboolean(server,"autoaway")
+	awayChannel=""
+	if autoAway==True:
+		if not config.has_option(server,"awaychannel"): raise RuntimeError("if the awto away option is enabled, an away channel must be spesified eg:\n awaychannel=/away/")
+		awayChannel=config.get(server,"awaychannel")
 	if config.has_option(server,"jailed"): jailed=json.loads(config.get(server,"jailed"))
-	params=(host,port,autoSub,jailchan,nickname,username,password,jailed,channel)
+	params=(host,port,autoSub,jailchan,nickname,username,password,jailed,channel,autoAway,awayChannel)
 	return params
 
 def getServers():

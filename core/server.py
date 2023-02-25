@@ -10,18 +10,16 @@ import secrets
 import inspect
 
 class server:
-	def __init__(self,host: str,port: int,autoSub: bool,jailChannel: str,nickname: str,username: str,password: str,jailed: dict,initialChannel: str):
+	def __init__(self,host: str,port: int,autoSub: bool,jailChannel: str,nickname: str,username: str,password: str,jailed: dict,initialChannel: str,autoAway: bool,awayChannel: str):
 		self.host=host
 		self.port=port
 		self.autoSub=autoSub
-		self.jailChannel=jailChannel
+		self.autoAway=autoAway
+		self.jailChannel=self.checkChannelSlashes(jailChannel)
 		self.jailed=jailed
 		self.announcers=[]
-		self.initialChannel=initialChannel
-		if not self.initialChannel.startswith("/"):
-			self.initialChannel="/"+self.initialChannel
-		if not self.initialChannel.endswith("/"):
-			self.initialChannel+="/"
+		self.initialChannel=self.checkChannelSlashes(initialChannel)
+		self.awayChannel=self.checkChannelSlashes(awayChannel)
 		self.username=username
 		self.password=password
 		self.nickname=nickname
@@ -29,6 +27,7 @@ class server:
 		self.commandHandeler=commands.commandHandeler(self)
 		self.running=True
 		if self.autoSub==True: self.autoSubThread=""
+		if self.autoAway==True: self.awayThread=""
 		self.jailThread=""
 
 	def connect(self):
@@ -55,6 +54,12 @@ class server:
 				ch=self.handleCommand(content,user,server)
 				if ch is not None: self.tcls.channel_message(ch,user["chanid"])
 
+	def checkChannelSlashes(self,channelName: str):
+		if not channelName.startswith("/"):
+			channelName="/"+channelName
+		if not channelName.endswith("/"):
+			channelName+="/"
+		return channelName
 
 	def handleCommand(self,msg,user,server):
 		if not user["usertype"]==2: return f'sorry {user["nickname"]}, your not an admin of this server.'
@@ -104,6 +109,13 @@ class server:
 					except Exception:
 						continue
 
+	def getJailedUsers(self):
+		users=[]
+		for t,d in self.jailed.items():
+			for u in self.tcls.users:
+				if u["username"] in d["users"]: users.append(u)
+		return users
+
 	def handleAutoSub(self):
 		for u in self.tcls.users:
 			if u["usertype"]==2: self.tcls.subscribe_to(u,teamtalk.SUBSCRIBE_INTERCEPT_CHANNEL_MSG)
@@ -111,9 +123,34 @@ class server:
 		while self.running:
 			if self.tcls.users[-1]!=lastAddition and self.tcls.users[-1]["usertype"]==2: self.tcls.subscribe_to(self.tcls.users[-1],teamtalk.SUBSCRIBE_INTERCEPT_CHANNEL_MSG);lastAddition=self.tcls.users[-1]
 
+	def handleAutoAway(self):
+		awayUsers=[]
+		while True:
+			self.tcls._sleep(0.2)
+			for user in self.tcls.users:
+				if user in awayUsers: continue
+				ustat=user["statusmode"]
+				if ustat==1 or ustat==4097 or ustat==257:
+					if user in self.getJailedUsers(): continue
+					user.update({"lastid":user["chanid"]})
+					self.tcls.move(user,self.awayChannel)
+					awayUsers.append(user)
+			for user in awayUsers:
+				if user in self.getJailedUsers(): continue
+				try:
+					if user["chanid"]==self.tcls.get_channel(self.awayChannel)["chanid"]:
+						ustat=user["statusmode"]
+						if ustat!=1 and ustat!=257 and ustat!=4097: awayUsers.remove(user);self.tcls.move(user,user["lastid"]);user.pop("lastid")
+				except:
+					continue
+
+
 	def startThreads(self):
 		self.jailThread=threading.Thread(target=self.handleJail)
 		self.jailThread.start()
 		if self.autoSub==True:
 			self.autoSubThread=threading.Thread(target=self.handleAutoSub)
 			self.autoSubThread.start()
+		if self.autoAway==True:
+			self.awayThread=threading.Thread(target=self.handleAutoAway)
+			self.awayThread.start()
