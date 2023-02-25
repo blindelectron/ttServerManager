@@ -1,6 +1,6 @@
 # ttServerManager
 A server management bot fore TeamTalk5.
-See the example configuration file for the documentation on how to configure it.
+See the [example configuration file](https://raw.githubusercontent.com/blindelectron/ttServerManager/main/config_example.ini) for the documentation on how to configure it.
 # features
 ## commands
 * ban and unban, ban a user by nickname.
