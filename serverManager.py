@@ -4,6 +4,7 @@ import sys
 import os
 from core import server,config
 import json
+import traceback
 
 version="1.0"
 
@@ -23,7 +24,14 @@ def handleServerSetUp(serverobj,serverName: str):
 	serverobj.connect()
 	serverobj.startThreads()
 	threading.Thread(target=handleJailUpDates,args=(serverobj,serverName),name=serverName+"_jailUpdater").start()
-	serverobj.tcls.handle_messages()
+	while True:
+		try:
+			serverobj.tcls.handle_messages()
+		except Exception:
+			tstr=traceback.format_exc()
+			print(tstr)
+
+
 
 def handleJailUpDates(serverobj,serverName):
 	while serverobj.running:
