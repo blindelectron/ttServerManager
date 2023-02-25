@@ -74,7 +74,7 @@ class server:
 		if not user["usertype"]==2: return f'sorry {user["nickname"]}, your not an admin of this server.'
 		if msg.startswith("/"): msg=msg.lstrip("/")
 		for c in self.commandHandeler.commands:
-			if msg.startswith(c) and len(msg.split(" ")[0])==len(c):
+			if msg.lower().startswith(c) and len(msg.split(" ")[0])==len(c):
 				func=c
 				break
 			else: 
@@ -84,8 +84,8 @@ class server:
 		func=getattr(commands.commandHandeler,func)
 		numArgs=len(inspect.signature(func).parameters)
 		if numArgs==1: func=func(self.commandHandeler)
-		elif numArgs==2: func=func(self.commandHandeler,msg.lstrip(c).lstrip(" "))
-		elif numArgs==3: func=func(self.commandHandeler,msg.lstrip(c).lstrip(" "),user)
+		elif numArgs==2: func=func(self.commandHandeler,msg[len(c):].lstrip(" "))
+		elif numArgs==3: func=func(self.commandHandeler,msg[len(c):].lstrip(" "),user)
 		if func is not None:
 			return func
 

@@ -14,7 +14,7 @@ import threading
 import telnetlib
 import warnings
 import functools
-
+import asyncio
 
 # constants
 ## MSG Types
@@ -386,7 +386,6 @@ class TeamTalkServer:
 			# finally, call the callback
 			if callable(callback):
 				callback(self, event, params)
-
 
 	def _sleep(self, seconds):
 		"""Like time.sleep, but immediately halts execution if we need to disconnect from a server"""
