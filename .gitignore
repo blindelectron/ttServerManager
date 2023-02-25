@@ -132,6 +132,7 @@ dmypy.json
 *.dist/
 *.build/
 serverManager.exe
+serverManager.bin
 ##ignore some local files:
 config.ini
 teamtalk - audio atmpt/
