@@ -191,8 +191,7 @@ class commandHandeler:
 
 	def setconfig(self,msg):
 		settings=getDictFromMessage(msg)
-		print(settings)
 		for k,v in settings.items():
-			self.server.configobj.set("server "+self.server.name,str(k),str(v))
-			with open("config.ini","w") as c:
-				self.server.configObj.write(c,False)
+			self.server.configObj.set("server "+self.server.name,str(k),str(v))
+		with open("config.ini","w") as c:
+			self.server.configObj.write(c,False)

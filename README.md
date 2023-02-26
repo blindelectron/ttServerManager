@@ -31,6 +31,15 @@ It does not matter if you propend and append the channel path with slashes, this
 * motd, sends back the server message of the day.
 * talkto, allows the sender to have  a private conversation with another specified user.
 This command moves the sender and user in to anew channel with a genorated password, it is useful when an admin needs to have a private conversation with a user.
+* setconfig, this command allows the user to set configuration options and have them written to the config file.
+the syntax is as follows:
+```
+setconfig nickname=testing bot
+```
+This syntax works for any option in the config file, you can even use it to write new options to the config file. You are also able to send it more than one option, like this:
+```
+setconfig nickname=testing bot autoaway=true
+```
 ### notes on commands.
 if sending in a channel message, you must propend the command with a slash(/)
 Most commands are based on user nickname, unless otherwise specified.
