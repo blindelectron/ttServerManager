@@ -24,11 +24,16 @@ def handleServerSetUp(serverobj,serverName: str):
 	serverobj.handleEvents()
 	serverobj.startThreads()
 	threading.Thread(target=handleJailUpDates,args=(serverobj,serverName),name=serverName+"_jailUpdater").start()
-	while True:
+	while serverobj.running:
 		try:
 			serverobj.tcls.handle_messages()
 		except Exception:
 			pass
+	if serverobj.restarting:
+		serverobj.__init__(*config.getServerParams(serverName))
+		handleServerSetUp(serverobj,serverName)
+
+
 
 def handleJailUpDates(serverobj,serverName):
 	while serverobj.running:

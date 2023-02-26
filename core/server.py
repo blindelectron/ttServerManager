@@ -32,11 +32,17 @@ class server:
 		self.jailThread=""
 		self.configObj=configObj
 		self.name=name
+		self.restarting=False
 
 	def connect(self):
 		self.tcls.connect()
 		self.tcls.login(self.nickname,self.username,self.password,"server Manager "+version)
 		self.tcls.join(self.initialChannel)
+
+	def disconnect(self):
+		self.tcls.leave()
+		self.tcls.disconnect()
+		self.running=False
 
 	def handleEvents(self):
 		@self.tcls.subscribe("messagedeliver")

@@ -195,3 +195,10 @@ class commandHandeler:
 			self.server.configObj.set("server "+self.server.name,str(k),str(v))
 		with open("config.ini","w") as c:
 			self.server.configObj.write(c,False)
+
+	def quit(self):
+		self.server.disconnect()
+
+	def restart(self):
+		self.server.restarting=True
+		self.server.disconnect()
