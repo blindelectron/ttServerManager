@@ -11,7 +11,7 @@ import inspect
 import traceback
 
 class server:
-	def __init__(self,host: str,port: int,autoSub: bool,jailChannel: str,nickname: str,username: str,password: str,jailed: dict,initialChannel: str,autoAway: bool,awayChannel: str):
+	def __init__(self,host: str,port: int,autoSub: bool,jailChannel: str,nickname: str,username: str,password: str,jailed: dict,initialChannel: str,autoAway: bool,awayChannel: str,configObj,name: str):
 		self.host=host
 		self.port=port
 		self.autoSub=autoSub
@@ -30,6 +30,8 @@ class server:
 		if self.autoSub==True: self.autoSubThread=""
 		if self.autoAway==True: self.awayThread=""
 		self.jailThread=""
+		self.configObj=configObj
+		self.name=name
 
 	def connect(self):
 		self.tcls.connect()
@@ -47,10 +49,10 @@ class server:
 				content = params["content"]
 				try:
 					ch=self.handleCommand(content,user,server)
+					if ch is not None: self.tcls.user_message(user,ch)
 				except Exception:
 					tstr=traceback.format_exc()
 					self.tcls.user_message(user,tstr)
-				if ch is not None: self.tcls.user_message(user,ch)
 			elif params["type"]==teamtalk.CHANNEL_MSG:
 				content = params["content"]
 				if user in self.announcers and not content.startswith("/"): self.commandHandeler.cbroadcast(content);return
@@ -58,10 +60,11 @@ class server:
 				elif user["userid"]==server.me["userid"]: return
 				try:
 					ch=self.handleCommand(content,user,server)
+					if ch is not None: self.tcls.channel_message(ch,user["chanid"])
 				except Exception:
 					tstr=traceback.format_exc()
 					self.tcls.channel_message(tstr,user["chanid"])
-				if ch is not None: self.tcls.channel_message(ch,user["chanid"])
+
 
 	def checkChannelSlashes(self,channelName: str):
 		if not channelName.startswith("/"):

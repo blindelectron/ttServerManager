@@ -8,7 +8,7 @@ import re
 import secrets
 
 def getDictFromMessage(msg):
-	pattern = r'\b(\w+)=(\w+)\b'
+	pattern = r'\b(\w+)\s*=\s*(.+?)\s*(?=\b\w+\s*=|\b$)'
 	matches = re.findall(pattern, msg)
 	data=dict(matches)
 	return data
@@ -188,3 +188,11 @@ class commandHandeler:
 		self.server.tcls._sleep(0.2)
 		for ul in u:
 			self.server.tcls.move(ul,f'/{u[-1]["nickname"]} talking to {", ".join(un)}/')
+
+	def setconfig(self,msg):
+		settings=getDictFromMessage(msg)
+		print(settings)
+		for k,v in settings.items():
+			self.server.configobj.set("server "+self.server.name,str(k),str(v))
+			with open("config.ini","w") as c:
+				self.server.configObj.write(c,False)
