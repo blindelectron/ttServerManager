@@ -31,7 +31,7 @@ def handleServerSetUp(serverobj,serverName: str):
 			pass
 	if serverobj.restarting:
 		serverobj.__init__(*config.getServerParams(serverName))
-		handleServerSetUp(serverobj,serverName)
+		return handleServerSetUp(serverobj,serverName)
 
 
 

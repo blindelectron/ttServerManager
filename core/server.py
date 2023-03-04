@@ -35,7 +35,12 @@ class server:
 		self.restarting=False
 
 	def connect(self):
-		self.tcls.connect()
+		try:
+			self.tcls.connect()
+		except ConnectionRefusedError:
+			print(f'connection was refused by the server {self.name}, retrying in 5 seconds')
+			self.tcls._sleep(5)
+			self.connect()
 		self.tcls.login(self.nickname,self.username,self.password,"server Manager "+version)
 		self.tcls.join(self.initialChannel)
 
@@ -70,7 +75,6 @@ class server:
 				except Exception:
 					tstr=traceback.format_exc()
 					self.tcls.channel_message(tstr,user["chanid"])
-
 
 	def checkChannelSlashes(self,channelName: str):
 		if not channelName.startswith("/"):
@@ -164,11 +168,11 @@ class server:
 
 
 	def startThreads(self):
-		self.jailThread=threading.Thread(target=self.handleJail)
+		self.jailThread=threading.Thread(target=self.handleJail,name=self.name+": jail")
 		self.jailThread.start()
 		if self.autoSub==True:
-			self.autoSubThread=threading.Thread(target=self.handleAutoSub)
+			self.autoSubThread=threading.Thread(target=self.handleAutoSub,name=self.name+": auto subscribe")
 			self.autoSubThread.start()
 		if self.autoAway==True:
-			self.awayThread=threading.Thread(target=self.handleAutoAway)
+			self.awayThread=threading.Thread(target=self.handleAutoAway,name=self.name+": auto away")
 			self.awayThread.start()

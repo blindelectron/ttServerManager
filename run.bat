@@ -1,0 +1,2 @@
+python serverManager.py
+pause

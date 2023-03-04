@@ -43,7 +43,7 @@ def getServers():
 	servers=[s for s in servers if s.lower().startswith("server ")]
 	sers=[]
 	for s in servers:
-		s=s.lstrip("server ")
+		s=s.lstrip("server").lstrip(" ")
 		sers.append(s)
 	return sers
 
@@ -76,7 +76,7 @@ def getopt(section: str,option: str):
 		return opt
 	except:
 		pass
-	raise RuntimeError(f'error geting configuration option {option}: the option {option} is not a valid configuration data type.')
+	raise RuntimeError(f'error getting configuration option {option}: the option {option} is not a valid configuration data type.')
 
 def getJailed(serverName):
 	if not config.has_option("server "+serverName,"jailed"): return {}
