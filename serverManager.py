@@ -12,7 +12,7 @@ def main():
 	servers={}
 	config.read()
 	for s in config.getServers():
-		servers.update({s:server.server(*config.getServerParams(s))})
+		servers.update({s:server.server(*config.getServerParams(s),config)})
 	serverThreads=[]
 	for sn,s in servers.items():
 		t=threading.Thread(target=handleServerSetUp,args=(s,sn),name=sn)
@@ -20,8 +20,8 @@ def main():
 		serverThreads.append(t)
 
 def handleServerSetUp(serverobj,serverName: str):
-	serverobj.connect()
 	serverobj.handleEvents()
+	serverobj.connect()
 	serverobj.startThreads()
 	threading.Thread(target=handleJailUpDates,args=(serverobj,serverName),name=serverName+"_jailUpdater").start()
 	while serverobj.running:

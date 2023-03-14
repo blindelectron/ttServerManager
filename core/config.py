@@ -31,11 +31,13 @@ def getServerParams(serverName: str):
 	if config.has_option(server,"autosubscribe"): autoSub=config.getboolean(server,"autosubscribe")
 	if config.has_option(server,"autoaway"): autoAway=config.getboolean(server,"autoaway")
 	awayChannel=""
+	offlinePms=[]
 	if autoAway==True:
 		if not config.has_option(server,"awaychannel"): raise RuntimeError("if the awto away option is enabled, an away channel must be spesified eg:\n awaychannel=/away/")
 		awayChannel=config.get(server,"awaychannel")
 	if config.has_option(server,"jailed"): jailed=json.loads(config.get(server,"jailed"))
-	params=(host,port,autoSub,jailchan,nickname,username,password,jailed,channel,autoAway,awayChannel,config,serverName)
+	if config.has_option(server,"offlinepms"): offlinePms=json.loads(config.get(server,"offlinepms"))
+	params=(host,port,autoSub,jailchan,nickname,username,password,jailed,channel,autoAway,awayChannel,serverName,offlinePms)
 	return params
 
 def getServers():
@@ -53,7 +55,7 @@ def updateJailed(serverName: str,jailed: dict):
 	else: raise RuntimeError(f'Server {serverName} not found.')
 	config.set(server,"jailed",json.dumps(jailed))
 
-def  set(serverName,option: str,value):
+def  set(serverName,option: str,value: str):
 	server=""
 	if config.has_section("server "+serverName): server="server "+serverName
 	else: raise RuntimeError(f'Server {serverName} not found.')
@@ -85,3 +87,4 @@ def getJailed(serverName):
 def write():
 	with open("config.ini","w") as c:
 		config.write(c,False)
+

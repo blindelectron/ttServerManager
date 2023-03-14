@@ -9,9 +9,11 @@ import threading
 import secrets
 import inspect
 import traceback
+from .offlinePm import offlinePM,unJsonafy
+import json
 
 class server:
-	def __init__(self,host: str,port: int,autoSub: bool,jailChannel: str,nickname: str,username: str,password: str,jailed: dict,initialChannel: str,autoAway: bool,awayChannel: str,configObj,name: str):
+	def __init__(self,host: str,port: int,autoSub: bool,jailChannel: str,nickname: str,username: str,password: str,jailed: dict,initialChannel: str,autoAway: bool,awayChannel: str,name: str,offlinePms: list,configObj):
 		self.host=host
 		self.port=port
 		self.autoSub=autoSub
@@ -27,12 +29,16 @@ class server:
 		self.tcls=teamtalk.TeamTalkServer(self.host,self.port)
 		self.commandHandeler=commands.commandHandeler(self)
 		self.running=True
-		if self.autoSub==True: self.autoSubThread=""
 		if self.autoAway==True: self.awayThread=""
 		self.jailThread=""
 		self.configObj=configObj
 		self.name=name
 		self.restarting=False
+		self.offlinePms=self.__unjsonoffpms__(offlinePms)
+		for o in self.offlinePms:
+			if o.received==True: self.offlinePms.remove(o)
+			self.updateOffLinePms()
+
 
 	def connect(self):
 		try:
@@ -50,6 +56,11 @@ class server:
 		self.running=False
 
 	def handleEvents(self):
+		@self.tcls.subscribe("loggedin")
+		def user(server,params):
+			for p in self.offlinePms:
+				if p.username==params["username"] and p.received==False: self.tcls.user_message(params,p.message)
+			if self.autoSub==True and params["usertype"]==2: self.tcls.subscribe_to(params,teamtalk.SUBSCRIBE_INTERCEPT_CHANNEL_MSG)
 		@self.tcls.subscribe("messagedeliver")
 		def ms(server,params):
 			threading.Thread(target=message,args=(self,server,params)).start()
@@ -77,6 +88,7 @@ class server:
 					self.tcls.channel_message(tstr,user["chanid"])
 
 	def checkChannelSlashes(self,channelName: str):
+		channelName=channelName
 		if not channelName.startswith("/"):
 			channelName="/"+channelName
 		if not channelName.endswith("/"):
@@ -84,10 +96,12 @@ class server:
 		return channelName
 
 	def handleCommand(self,msg,user,server):
-		if not user["usertype"]==2: return f'sorry {user["nickname"]}, your not an admin of this server.'
+		nonAdminCmds=['offpm','received']
+
 		if msg.startswith("/"): msg=msg.lstrip("/")
 		for c in self.commandHandeler.commands:
 			if msg.lower().startswith(c) and len(msg.split(" ")[0])==len(c):
+				if not user["usertype"]==2 and c not in nonAdminCmds: return f'sorry {user["nickname"]}, your not an admin of this server.'
 				func=c
 				break
 			else: 
@@ -111,6 +125,14 @@ class server:
 		u=data
 		if len(data)>1: self.jailed.update({t:{"users":[u[0]],"ipaddresses":[u[1]]}});return 0
 		else: self.jailed.update({t:{"users":[u[0]],"ipaddresses":[]}});return 0
+
+	def offLinePm(self,user,message):
+		self.offlinePms.append(offlinePM(message,user,False))
+		self.updateOffLinePms()
+
+	def updateOffLinePms(self):
+		self.configObj.set(self.name,"offlinepms",json.dumps(self.__jsonoffpms__()))
+		self.configObj.write()
 
 	def unjail(self,data):
 		for k,v in self.jailed.items():
@@ -138,13 +160,6 @@ class server:
 				if u["username"] in d["users"]: users.append(u)
 		return users
 
-	def handleAutoSub(self):
-		for u in self.tcls.users:
-			if u["usertype"]==2: self.tcls.subscribe_to(u,teamtalk.SUBSCRIBE_INTERCEPT_CHANNEL_MSG)
-			lastAddition=self.tcls.users[-1]
-		while self.running:
-			if self.tcls.users[-1]!=lastAddition and self.tcls.users[-1]["usertype"]==2: self.tcls.subscribe_to(self.tcls.users[-1],teamtalk.SUBSCRIBE_INTERCEPT_CHANNEL_MSG);lastAddition=self.tcls.users[-1]
-
 	def handleAutoAway(self):
 		awayUsers=[]
 		while True:
@@ -170,9 +185,18 @@ class server:
 	def startThreads(self):
 		self.jailThread=threading.Thread(target=self.handleJail,name=self.name+": jail")
 		self.jailThread.start()
-		if self.autoSub==True:
-			self.autoSubThread=threading.Thread(target=self.handleAutoSub,name=self.name+": auto subscribe")
-			self.autoSubThread.start()
 		if self.autoAway==True:
 			self.awayThread=threading.Thread(target=self.handleAutoAway,name=self.name+": auto away")
 			self.awayThread.start()
+
+	def __jsonoffpms__(self):
+		pms=[]
+		for o in self.offlinePms:
+			pms.append(o.jsonify())
+		return pms
+
+	def __unjsonoffpms__(self,pmlist: list):
+		pms=[]
+		for o in pmlist:
+			pms.append(unJsonafy(o))
+		return pms

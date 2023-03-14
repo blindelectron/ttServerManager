@@ -42,6 +42,13 @@ setconfig nickname=testing bot autoaway=true
 ```
 * restart, restarts the bot on the server where the command was sent from. This does not restart the program, it merely rereads the config and reinitializes the server object, I had to do this to insure that someone from one server could not restart the bot on other servers.
 * quit, quits the bot on the server where the command was sent from. This works in the same way as restart, it merely kills the server object, rather than quitting the entire program. The program will however, close if the bot is quit on all servers.
+* offpm, sends an offline pm to a user, they will see it next time they log in .
+The syntax is:
+```
+offpm user=<username> message=<message>
+```
+Note that this command takes user name, not nickname.
+* received, this command is to tell server manager that you have received your off line messages.
 ### notes on commands.
 if sending in a channel message, you must propend the command with a slash(/)
 Most commands are based on user nickname, unless otherwise specified.
