@@ -38,7 +38,7 @@ class server:
 		for o in self.offlinePms:
 			if o.received==True: self.offlinePms.remove(o)
 			self.updateOffLinePms()
-
+		self.awayUsers=[]
 
 	def connect(self):
 		try:
@@ -58,9 +58,24 @@ class server:
 	def handleEvents(self):
 		@self.tcls.subscribe("loggedin")
 		def user(server,params):
+			params=self.tcls.get_user(params["userid"])
 			for p in self.offlinePms:
 				if p.username==params["username"] and p.received==False: self.tcls.user_message(params,p.message)
 			if self.autoSub==True and params["usertype"]==2: self.tcls.subscribe_to(params,teamtalk.SUBSCRIBE_INTERCEPT_CHANNEL_MSG)
+			self.handleJail(params)
+		@self.tcls.subscribe("updateuser")
+		def userup(server,params):
+			params=self.tcls.get_user(params["userid"])
+			ustat=params["statusmode"]
+			if ustat==1 or ustat==4097 or ustat==257 and params not in self.getJailedUsers():
+				params.update({"lastid":params["chanid"]})
+				self.tcls.move(params,self.awayChannel)
+			elif ustat!=1 or ustat!=4097 or ustat!=257 and params not in self.getJailedUsers():
+				if params["lastid"] is not None: self.tcls.move(params["userid"],params["lastid"])
+		@self.tcls.subscribe("adduser")
+		def userad(server,params):
+			params=self.tcls.get_user(params["userid"])
+			self.handleJail(params)
 		@self.tcls.subscribe("messagedeliver")
 		def ms(server,params):
 			threading.Thread(target=message,args=(self,server,params)).start()
@@ -75,6 +90,7 @@ class server:
 				except Exception:
 					tstr=traceback.format_exc()
 					self.tcls.user_message(user,tstr)
+					print(tstr)
 			elif params["type"]==teamtalk.CHANNEL_MSG:
 				content = params["content"]
 				if user in self.announcers and not content.startswith("/"): self.commandHandeler.cbroadcast(content);return
@@ -86,6 +102,7 @@ class server:
 				except Exception:
 					tstr=traceback.format_exc()
 					self.tcls.channel_message(tstr,user["chanid"])
+					print(tstr)
 
 	def checkChannelSlashes(self,channelName: str):
 		channelName=channelName
@@ -123,8 +140,15 @@ class server:
 			if len(data)>1 and hasattr(u,"ipaddresses") and data[1] in u["ipaddresses"]: return 1
 		t=secrets.token_hex(16)
 		u=data
-		if len(data)>1: self.jailed.update({t:{"users":[u[0]],"ipaddresses":[u[1]]}});return 0
-		else: self.jailed.update({t:{"users":[u[0]],"ipaddresses":[]}});return 0
+		if len(data)>1: 
+			self.jailed.update({t:{"users":[u[0]],"ipaddresses":[u[1]]}})
+		else:
+			self.jailed.update({t:{"users":[u[0]],"ipaddresses":[]}})
+			for user in self.tcls.users: 
+				if user["username"]==data[0]: 
+					user.update({"lastid":user["chanid"]})
+					self.tcls.move(user["userid"],self.jailChannel)
+		return 0
 
 	def offLinePm(self,user,message):
 		self.offlinePms.append(offlinePM(message,user,False))
@@ -136,58 +160,32 @@ class server:
 
 	def unjail(self,data):
 		for k,v in self.jailed.items():
-			if data==v["users"]: self.jailed.pop(k);return 0
-		return 1
+			if data==v["users"]: 
+				self.jailed.pop(k)
+				user=None
+				for u in self.tcls.users:
+					if u["username"] in data and "lastid" in u: self.tcls.move(u["userid"],u["lastid"])
 
-	def handleJail(self):
-		while self.running:
-			self.tcls._sleep(0.2)
-			for u in self.tcls.users:
-				if u["userid"]==self.tcls.me["userid"]: continue
-				for t,d in self.jailed.items():
-					if u["username"] in d["users"] and hasattr(d,"ipaddresses") and u["ipaddr"] not in d["ipaddresses"]: d["ipaddresses"].append(u["ipaddr"])
-					elif u["username"] in d["users"] and not hasattr(d,"ipaddresses"): d.update({"ipaddresses":[u["ipaddr"]]})
-					elif u["ipaddr"] in d["ipaddresses"] and u["username"] not in d["users"]: d["users"].append(u["username"])
-					try:
-						if u["username"] in d["users"] and not u["chanid"]==self.tcls.get_channel(self.jailChannel)["chanid"]: u.update({"lastid":u["chanid"]});self.tcls.move(u,self.jailChannel)
-					except Exception:
-						continue
+				return 0
+		return 1 
 
 	def getJailedUsers(self):
 		users=[]
 		for t,d in self.jailed.items():
 			for u in self.tcls.users:
-				if u["username"] in d["users"]: users.append(u)
+				if u["username"] in d["users"] or u["ipaddr"] in d["ipaddresses"]: users.append(u)
 		return users
 
-	def handleAutoAway(self):
-		awayUsers=[]
-		while True:
-			self.tcls._sleep(0.2)
-			for user in self.tcls.users:
-				if user in awayUsers: continue
-				ustat=user["statusmode"]
-				if ustat==1 or ustat==4097 or ustat==257:
-					if user in self.getJailedUsers(): continue
-					user.update({"lastid":user["chanid"]})
-					self.tcls.move(user,self.awayChannel)
-					awayUsers.append(user)
-			for user in awayUsers:
-				if user in self.getJailedUsers(): continue
-				try:
-					if user["chanid"]==self.tcls.get_channel(self.awayChannel)["chanid"]:
-						ustat=user["statusmode"]
-						if ustat!=1 and ustat!=257 and ustat!=4097: awayUsers.remove(user);self.tcls.move(user,user["lastid"]);user.pop("lastid")
-				except:
-					continue
-
-
-	def startThreads(self):
-		self.jailThread=threading.Thread(target=self.handleJail,name=self.name+": jail")
-		self.jailThread.start()
-		if self.autoAway==True:
-			self.awayThread=threading.Thread(target=self.handleAutoAway,name=self.name+": auto away")
-			self.awayThread.start()
+	def handleJail(self,user):
+		for t,d in self.jailed.items():
+			done=False
+			if user["ipaddr"] in d["ipaddresses"] and user["username"] not in d["users"]: d["users"].append(user["username"]);done=True
+			if user["username"] in d["users"] and user["ipaddr"] not in d["ipaddresses"]: d["ipaddresses"].append(user["ipaddr"]);done=True
+			if done==True: 
+				self.configObj.set(self.name,"jailed",json.dumps(self.jailed))
+				self.configObj.write()
+		if user in self.getJailedUsers() and not hasattr(user,"chanid"): self.tcls.move(user["userid"],self.jailChannel)
+		elif user in self.getJailedUsers() and user["chanid"]!=self.tcls.get_channel(self.jailChannel)["chanid"]: self.tcls.move(user["userid"],self.jailChannel)
 
 	def __jsonoffpms__(self):
 		pms=[]

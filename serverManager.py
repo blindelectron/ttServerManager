@@ -22,7 +22,6 @@ def main():
 def handleServerSetUp(serverobj,serverName: str):
 	serverobj.handleEvents()
 	serverobj.connect()
-	serverobj.startThreads()
 	threading.Thread(target=handleJailUpDates,args=(serverobj,serverName),name=serverName+"_jailUpdater").start()
 	while serverobj.running:
 		try:
@@ -32,8 +31,6 @@ def handleServerSetUp(serverobj,serverName: str):
 	if serverobj.restarting:
 		serverobj.__init__(*config.getServerParams(serverName))
 		return handleServerSetUp(serverobj,serverName)
-
-
 
 def handleJailUpDates(serverobj,serverName):
 	while serverobj.running:

@@ -103,8 +103,8 @@ class commandHandeler:
 				u=us
 				uns=self.server.unjail(us["users"])
 				if uns==0: 
-					for un in self.server.tcls.get_users_in_channel(self.server.jailChannel):
-						if un["username"] in us["users"] and un["lastid"] is not None: self.server.tcls.move(un,un["lastid"])
+#					for un in self.server.tcls.get_users_in_channel(self.server.jailChannel):
+						#if un["lastid"] is not None: self.server.tcls.move(un["userid"],un["lastid"])
 					return f'the user {str(us["users"])}, has been removed from jail'
 				else: return f'The user {msg}, is already out of jail.'
 		if u is None: return f'the user {msg}, was not found.'
