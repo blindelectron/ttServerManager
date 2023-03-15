@@ -35,15 +35,16 @@ class commandHandeler:
 	def motd(self,msg):
 		return self.server.tcls.server_params["motd"]
 
-	def offpm(self,msg):
+	def offpm(self,msg,user):
 		data=getDictFromMessage(msg)
-		if data["message"] is None: return "yu must provide a message to send."
-		elif data["user"] is None: return "You must provide a user to send this message to."
+		if "message" not in data: return "You must provide a message to send."
+		elif "user" not in data: return "You must provide a user to send this message to."
+		sender=user["nickname"]
 		username=""
 		for a in self.server.tcls.getAccounts():
 			if a["username"]==data["user"]: username=data["user"]
 		if username=="": return f'the user {data["user"]}, was not found on the server.'
-		self.server.offLinePm(username,data["message"])
+		self.server.offLinePm(username,data["message"],sender)
 
 	def received(self,msg,user):
 		done=False
@@ -52,7 +53,7 @@ class commandHandeler:
 		if not done: return "You have no offline messages."
 		if done: 
 			self.server.updateOffLinePms()
-			return "your off line messages have benn cleared"
+			return "Your offline messages have been cleared."
 
 	def join(self,msg):
 		c=None
@@ -103,8 +104,6 @@ class commandHandeler:
 				u=us
 				uns=self.server.unjail(us["users"])
 				if uns==0: 
-#					for un in self.server.tcls.get_users_in_channel(self.server.jailChannel):
-						#if un["lastid"] is not None: self.server.tcls.move(un["userid"],un["lastid"])
 					return f'the user {str(us["users"])}, has been removed from jail'
 				else: return f'The user {msg}, is already out of jail.'
 		if u is None: return f'the user {msg}, was not found.'

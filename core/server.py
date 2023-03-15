@@ -60,7 +60,7 @@ class server:
 		def user(server,params):
 			params=self.tcls.get_user(params["userid"])
 			for p in self.offlinePms:
-				if p.username==params["username"] and p.received==False: self.tcls.user_message(params,p.message)
+				if p.username==params["username"] and p.received==False: self.tcls.user_message(params,f'Offline pm from {p.sender}: {p.message}, reply received to confirm that you have received this message.')
 			if self.autoSub==True and params["usertype"]==2: self.tcls.subscribe_to(params,teamtalk.SUBSCRIBE_INTERCEPT_CHANNEL_MSG)
 			self.handleJail(params)
 		@self.tcls.subscribe("updateuser")
@@ -150,8 +150,8 @@ class server:
 					self.tcls.move(user["userid"],self.jailChannel)
 		return 0
 
-	def offLinePm(self,user,message):
-		self.offlinePms.append(offlinePM(message,user,False))
+	def offLinePm(self,user,message,sender):
+		self.offlinePms.append(offlinePM(message,user,sender,False))
 		self.updateOffLinePms()
 
 	def updateOffLinePms(self):
