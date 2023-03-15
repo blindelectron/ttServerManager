@@ -153,7 +153,7 @@ class commandHandeler:
 		self.server.tcls.unban(u)
 
 	def help(self,msg):
-		return f'commands for {self.server.tcls.get_user(self.server.tcls.me["userid"])["clientname"]}, {", ".join(self.commands)}'
+		return f'Commands for {self.server.tcls.get_user(self.server.tcls.me["userid"])["clientname"]}: {", ".join(self.commands)}'
 
 	def bans(self,msg):
 		return str(self.server.tcls.getBans())
