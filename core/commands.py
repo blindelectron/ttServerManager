@@ -117,12 +117,12 @@ class commandHandeler:
 		if u==[]: return "user not found."
 		c=None
 		for ch in self.server.tcls.channels:
-			if ch["channel"].lstrip("/").rstrip("/") in msg and ch["channel"].lstrip("/").rstrip("/")!="": c=ch;print("found channel "+ch["channel"].lstrip("/").rstrip("/"))
+			if ch["channel"].lstrip("/").rstrip("/") in msg and ch["channel"].lstrip("/").rstrip("/")!="": c=ch
 			elif ch["channel"] in msg: c=ch
 		if c is None: return "channel not found."
 		for user in u:
 			if user["chanid"] is not None and user["chanid"]==ch["chanid"]: continue
-			self.server.tcls.move(user,c)
+			self.server.tcls.move(user["userid"],c["chanid"])
 
 	def pm(self,msg):
 		u=""
@@ -199,7 +199,7 @@ class commandHandeler:
 		u.append(user)
 		un=[]
 		for ul in u:
-			if u.index(ul)>=len(u)-1: break
+			if u.index(ul)>=u.index(u[-1]): break
 			un.append(ul["nickname"])
 		self.server.tcls.send(f'makechannel parentid=1 name="{u[-1]["nickname"]} talking to {", ".join(un)}" password={secrets.token_hex(32)} audiocodec=[3,48000,2,2049,10,1,0,64000,0,0,1920,1] audiocfg=[0,0]')
 		self.server.tcls._sleep(0.2)

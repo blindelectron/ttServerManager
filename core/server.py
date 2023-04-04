@@ -22,7 +22,8 @@ class server:
 		self.jailed=jailed
 		self.announcers=[]
 		self.initialChannel=self.checkChannelSlashes(initialChannel)
-		self.awayChannel=self.checkChannelSlashes(awayChannel)
+		if self.autoAway==True: self.awayChannel=self.checkChannelSlashes(awayChannel)
+		else: self.awayChannel=""
 		self.username=username
 		self.password=password
 		self.nickname=nickname
@@ -67,10 +68,10 @@ class server:
 		def userup(server,params):
 			params=self.tcls.get_user(params["userid"])
 			ustat=params["statusmode"]
-			if ustat==1 or ustat==4097 or ustat==257 and params not in self.getJailedUsers():
+			if ustat==1 or ustat==4097 or ustat==257 and params not in self.getJailedUsers() and self.autoAway==True:
 				params.update({"lastid":params["chanid"]})
 				self.tcls.move(params,self.awayChannel)
-			elif ustat!=1 or ustat!=4097 or ustat!=257 and params not in self.getJailedUsers():
+			elif ustat!=1 or ustat!=4097 or ustat!=257 and params not in self.getJailedUsers() and self.autoAway==True:
 				if params["lastid"] is not None: self.tcls.move(params["userid"],params["lastid"])
 		@self.tcls.subscribe("adduser")
 		def userad(server,params):
